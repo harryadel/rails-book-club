@@ -7,5 +7,7 @@ Rails.application.routes.draw do
 
   resources :sessions, only: %i[new create destroy]
   resources :users, only: %i[index new create destroy]
-  resources :posts
+  resources :posts do
+    resources :comments
+  end
 end
