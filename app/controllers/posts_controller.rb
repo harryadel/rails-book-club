@@ -10,7 +10,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(post_params)
+    @post = Post.new(post_params.merge(user_id: current_user.id))
 
     if @post.save
       redirect_to @post
@@ -49,7 +49,8 @@ class PostsController < ApplicationController
     params.require(:post).permit(:title, :content)
   end
 
-  # def find_post
-  # 	@post = Post.find(params[:id])
-  # end
+  def correct_user
+    @post = Post.find(params[:id])
+    redirect_to user_path(current_user) unless current_user?(@post.user)
+  end
 end
