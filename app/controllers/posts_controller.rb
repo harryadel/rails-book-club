@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  # before_action :find_post, only: [:show, :update, :edit, :destroy]
+  before_action :require_user, except: %i[show index]
 
   def index
     @posts = Post.all.order('created_at DESC')
@@ -24,7 +24,7 @@ class PostsController < ApplicationController
  end
 
   def update
-    @post = Post.find(params[:id])
+    @post = current_user.posts.find(params[:id])
     if @post.update(post_params)
       redirect_to @post
     else
@@ -33,11 +33,11 @@ class PostsController < ApplicationController
   end
 
   def edit
-    @post = Post.find(params[:id])
+    @post = current_user.posts.find(params[:id])
   end
 
   def destroy
-    @post = Post.find(params[:id])
+    @post = current_user.posts.find(params[:id])
     @post.destroy
 
     redirect_to posts_path
@@ -49,8 +49,7 @@ class PostsController < ApplicationController
     params.require(:post).permit(:title, :content)
   end
 
-  def correct_user
-    @post = Post.find(params[:id])
-    redirect_to user_path(current_user) unless current_user?(@post.user)
+  def require_user
+    redirect_to posts_path if current_user.nil?
   end
 end

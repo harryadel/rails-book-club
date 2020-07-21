@@ -1,26 +1,14 @@
 <% content_for :page_title, @post.title %>
 
-<section class="section">
+<section>
   <div class="container">
-    <nav class="level">
-      <!-- Left side -->
-      <div class="level-left">
-        <p class="level-item">
-          <strong>Actions</strong>
-        </p>
-      </div>
-      <!-- Right side -->
-      <div class="level-right">
-        <p class="level-item">
-          <%= link_to "Edit", edit_post_path(@post), class:"button" %>
-        </p>
-        <p class="level-item">
-          <%= link_to "Delete", post_path(@post), method: :delete, data: { confirm: "Are you sure?" }, class:"button is-danger" %>
-        </p>
-      </div>
+    <% if current_user && current_user.id == @post.user_id %>
+    <nav class="nav">
+      <%= link_to "Edit", edit_post_path(@post), class:"btn btn-light" %>
+      <%= link_to "Delete", post_path(@post), method: :delete, data: { confirm: "Are you sure?" }, class:"btn btn-danger" %>
     </nav>
     <hr />
-
+    <% end %>
     <div class="content">
       <%= @post.content %>
     </div>
@@ -31,10 +19,12 @@
   <div class="container">
     <h2 class="subtitle is-5"><strong><%= @post.comments.count %></strong> Comments</h2>
     <%= render @post.comments %>
+    <% if current_user %>
     <div class="comment-form">
       <hr />
       <h3 class="subtitle is-3">Leave a reply</h3>
       <%= render 'comments/form' %>
     </div>
+    <% end %>
   </div>
 </section>
